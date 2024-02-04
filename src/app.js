@@ -19,6 +19,12 @@ const routes = {
     , '/register': Register
 };
 
+const cached= [
+    '/',
+    '/p/:id',
+    '/register'
+]
+
 // The router code. Takes a URL, checks against the list of supported routes and then renders the corresponding content page.
 const router = async () => {
     count_router++;
@@ -39,20 +45,20 @@ const router = async () => {
 
     // Get the parsed URl from the addressbar
     let request = Utils.parseRequestURL()
-
-
-    hash = createHash(request);
-    let sessContent = sessionStorage.getItem(hash);
-
-    if (typeof (sessContent) == "string") {
-        content.innerHTML= lzw_decode(sessContent);
-        //console.log('HTML: ', content.innerHTML.length, 'LZW: ', sessContent.length);
-        return;
-    }
-
-
     // Parse the URL and if it has an id part, change it with the string ":id"
     let parsedURL = (request.resource ? '/' + request.resource : '/') + (request.id ? '/:id' : '') + (request.verb ? '/' + request.verb : '')
+
+
+    if(cached.includes(parsedURL)) {
+        hash = createHash(request);
+        let sessContent = sessionStorage.getItem(hash);
+    
+        if (typeof (sessContent) == "string") {
+            content.innerHTML= lzw_decode(sessContent);
+            //console.log('HTML: ', content.innerHTML.length, 'LZW: ', sessContent.length);
+            return;
+        }
+    }
 
     // Get the page from our hash of supported routes.
     // If the parsed URL is not in our list of supported routes, select the 404 page instead
@@ -60,8 +66,11 @@ const router = async () => {
     content.innerHTML = await page.render();
     await page.after_render();
 
-    sessionStorage.setItem(hash, lzw_encode(content.innerHTML.toString()));
+    if(cached.includes(parsedURL)) {
+        sessionStorage.setItem(hash, lzw_encode(content.innerHTML.toString()));
+    }
 }
+
 
 //sessionStorage.clear();
 
@@ -73,3 +82,4 @@ window.addEventListener('hashchange', router);
 
 // Listen on page load:
 window.addEventListener('load', router);
+
