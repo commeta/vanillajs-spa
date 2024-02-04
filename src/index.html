@@ -32,6 +32,10 @@
             return hash.toString(16);
         }
 
+	    
+        // From
+        // https://github.com/antonylesuisse/lzwjs/tree/master
+
         function lzw_encode(s,base=64) {
             if (!s) return s;
             var sym="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_!#%()*+,./:;=?@[]^{|}~ $`";
