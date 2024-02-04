@@ -1,18 +1,25 @@
-<!DOCTYPE html>
-<html>
-
-<head>
+<!doctype html>
+<html lang="ru">
+  <head>
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Diggle U!</title>
-    <link href="data:image/x-icon;base64,AAABAAEAEBAAAAEAIABoBAAAFgAAACgAAAAQAAAAIAAAAAEAIAAAAAAAAAQAABILAAASCwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAMAAAAOwAAADdAAAAxQAAAPYAAABfAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADYAAAD+AAAA/wAAAP8AAAD/AAAAcQAAAAAAAABEAAAAjQAAAE8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAcAAADMAAAA/wAAAP8AAAD/AAAA/wAAAOwAAACfAAAA/gAAAOUAAAD+AAAASwAAAAAAAAAAAAAAAAAAAAAAAABhAAAA/wAAAP8AAAD/AAAA/wAAAP8AAAD/AAAA9QAAAHIAAAADAAAA0AAAAKIAAAAAAAAAAAAAAAAAAAAAAAAAkgAAAP8AAAD/AAAA/wAAAP8AAAD/AAAA/wAAAM0AAAAAAAAAAAAAAJMAAACUAAAAAAAAAAAAAAAPAAAABgAAAHQAAAD/AAAA/wAAAP8AAAD/AAAA/wAAAP8AAACwAAAAAQAAABUAAAABAAAAAQAAAAAAAAAAAAAAKQAAAFkAAACrAAAA/wAAAP8HBgX/Dw4O/wAAAP8AAAD/AAAA0QAAAF4AAAA7AAAAAAAAAAAAAAAAAAAAAAAAABMAAAB1AAAA/xwoKv8fLC//FBMT/yUkI/8RGRr/Kjo+/wAAAP8AAAClAAAAHgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAs4a8yv//////8////1t/iP8aJCb////////////S////AAAA7QAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAM+h4vH//////3alsf8SGRv/AAAA/2+cp//1////5f///wAAAP8AAAAMAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACoAAAA/wAAAP8AAAD/AAAA/wAAAP8AAAD/AAAA/wAAAP8AAADkAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAeQAAAP8AAAD/AAAA/wAAAP8AAAD/AAAA/wAAAP8AAAD/AAAAtQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAHmCh87/AAAA/wAAAP8AAAD/AAAA/wAAAP8AAAD/Wl6P/zk7WrQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAB5tb3//wAAAP8AAAD7AAAA0gAAANYAAADvAAAA/4iN1/8+QGK0AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAeTU3VP8AAADgAAAAPAAAAAAAAAAAAAAAHgAAAMITEx7/LC1GtAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAGwAAACuAAAAEgAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAgwAAAKQAAAAAAAAAAAAAAAAAAAAA8D8AAPABAADgAQAA4AEAAOAZAACAAQAAgAMAAIADAADABwAAwAcAAMAHAADADwAAwA8AAMAPAADDDwAAx48AAA=="
-        rel="icon" type="image/x-icon">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.7.1/css/bulma.min.css">
-    <script defer src="https://use.fontawesome.com/releases/v5.1.0/js/all.js"></script>
-    <script type="module" src="/app.js"></script>
-</head>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Таблицы данных</title>
+    <meta name="robots" content="noindex, nofollow">
+	
+	<link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/themes/base/jquery-ui.min.css"/>
+	<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/ju/jq-3.6.0/jszip-2.5.0/dt-1.11.5/af-2.3.7/b-2.2.2/b-colvis-2.2.2/b-html5-2.2.2/b-print-2.2.2/cr-1.5.5/date-1.1.2/fc-4.0.2/fh-3.2.2/kt-2.6.4/r-2.2.9/rg-1.1.4/rr-1.2.8/sc-2.0.5/sb-1.3.2/sp-2.0.0/sl-1.3.4/sr-1.1.0/datatables.min.css"/>
+	 
+	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.36/pdfmake.min.js"></script>
+	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.36/vfs_fonts.js"></script>
+	<script type="text/javascript" src="https://cdn.datatables.net/v/ju/jq-3.6.0/jszip-2.5.0/dt-1.11.5/af-2.3.7/b-2.2.2/b-colvis-2.2.2/b-html5-2.2.2/b-print-2.2.2/cr-1.5.5/date-1.1.2/fc-4.0.2/fh-3.2.2/kt-2.6.4/r-2.2.9/rg-1.1.4/rr-1.2.8/sc-2.0.5/sb-1.3.2/sp-2.0.0/sl-1.3.4/sr-1.1.0/datatables.min.js"></script>
+	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>	
+	<script type="text/javascript" charset="utf8" src="https://cdnjs.cloudflare.com/ajax/libs/jquery-sparklines/2.1.2/jquery.sparkline.min.js"></script>	
 
-<body>
+    <script type="module" src="/app.js"></script>
+	<link href="data:image/x-icon;base64,AAABAAEAEBAAAAEAIABoBAAAFgAAACgAAAAQAAAAIAAAAAEAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACNl+BEZnTijGRt5bpYYuPIV2Lp1lJg6NZTYebMX2vlwGFu4pZ9huFe1NX8AgAAAAAAAAAAAAAAAAAAAACMlOpERVPp/1po6/+LlOz/oajv/6ux7v+rse7/oKjv/4yW7f9seOv/Q1Po/3mD5moAAAAAAAAAAAAAAAAAAAAAXmrnzIiQ7/98hub/srfv//r7/f/9/f3//v79//z9/f/u8Pr/jpXr/2d06f9UYefmx8j7CAAAAAAAAAAAkZbmPEdW6f/n6fj/7O35/1ll6f9zgOr/5Ob4//v7/P+4vvH/Ul7q/4mT7P/v8vv/Tlvr/32H41wAAAAAAAAAAGZy5qKCiu3//Pz9//79/f/Z3Pb/R1bs/0lX6/9td+v/PUzt/3R/7P/2+Pv//P38/5Sc7v9daui4AAAAANTU+wZTYOnuxMnz//3+/v///v7//fz8/8DF8/8+Tuz/Okvw/2Jv6//w8vv//v7+//7+/v/Y2/X/Tlvn+MXE9hKWnOlCR1bo//X2/P/+/v7//v79//39/P/6/fz/nqTx/1Be7P/l5/j//P39//7+/v/9/v7//Pv9/1Vi6v+GjelSa3fmemt27P/+/v7//f7+//v8/P/d4Pb/l57u/1Ff6v9ATuz/dX/s/8TG8v/39/z//v79//////+Biu//aHPmiFZj656Ole7/8/P8/7a88P9teOz/QU7r/zxL7v88TO7/PEzu/zxM7f89Tev/VmPq/6Cm7//k6Pn/oqnx/1lk665aZ+q8YnDp/4eQ5P+Wn+3/rrPv/77C8v/IzPD/0NTx/9XX8//U1/P/y9Dw/7e78P+XoO7/e4Xm/2Nv6P9XZe3Ke4foZkZT6v/AxvL//f39//7+/v/+/v7//v7+//7+/v/+/v7//v7+//7+/v/+/v7//f7+/8zR9P9KV+r/cX3nggAAAABzfud+SFbo/7a88v/8/f7//v7+//7+/v////////////7+/v/+/v7//f3+/7zB8/9KV+j/bnnlkNPX/gIAAAAAAAAAAH2H6XBJVub8j5jt//P2+//+/f3////////////9/v7/8/X8/4+Y7f9KV+f6doLmdgAAAAAAAAAAAAAAAAAAAAAAAAAAg4/rRE9f5eJcaer/w8rz//v7/f/5+/3/wMXz/1pn6f9XZObgjJjqRAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACxuvAUZ3PmnkdX5vxsdur/YW3p/0ta5vZreOOKvMPxDgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACXm+wqY3LjmGp35YSirO4cAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA8A8AAOAHAADAAwAAwAMAAIABAACAAQAAgAEAAIAAAAAAAAAAAAAAAIAAAADAAQAA4AcAAPAPAAD4HwAA/n8AAA==" rel="icon" type="image/x-icon" />
+  </head>
+  <body>
+
     <div id="header_container"></div>
 
     <div id="page_container" class="container pageEntry" >
@@ -20,6 +27,7 @@
     </div>
 
     <div id="footer_container"></div>
+
+
 </body>
-    
 </html>
