@@ -19,91 +19,6 @@ const routes = {
     , '/register': Register
 };
 
-
-function lzw64_encode(s) {
-    if (!s) return s;
-
-    var b64 = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_";
-    var d = new Map();
-    var s = unescape(encodeURIComponent(s)).split("");
-    var word = s[0];
-    var num = 256;
-    var key;
-    var o = [];
-
-    function out(word, num) {
-        key = word.length > 1 ? d.get(word) : word.charCodeAt(0);
-        o.push(b64[key & 0x3f]);
-        o.push(b64[(key >> 6) & 0x3f]);
-        o.push(b64[(key >> 12) & 0x3f]);
-    }
-
-    for (var i = 1; i < s.length; i++) {
-        var c = s[i];
-        if (d.has(word + c)) {
-            word += c;
-        } else {
-            d.set(word + c, num++);
-            out(word, num);
-            word = c;
-            if (num == (1 << 18) - 1) {
-                d.clear();
-                num = 256;
-            }
-        }
-    }
-
-    out(word);
-    return o.join("");
-}
-
-function lzw64_decode(s) {
-    var b64 = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_";
-    var b64d = {};
-
-    for (var i = 0; i < 64; i++) {
-        b64d[b64.charAt(i)] = i;
-    }
-
-    var d = new Map();
-    var num = 256;
-    var word = String.fromCharCode(b64d[s[0]] + (b64d[s[1]] << 6) + (b64d[s[2]] << 12));
-    var prev = word;
-    var o = [word];
-
-    for (var i = 3; i < s.length; i += 3) {
-        var key = b64d[s[i]] + (b64d[s[i + 1]] << 6) + (b64d[s[i + 2]] << 12);
-        word = key < 256 ? String.fromCharCode(key) : d.has(key) ? d.get(key) : word + word.charAt(0);
-        o.push(word);
-        d.set(num++, prev + word.charAt(0));
-        prev = word;
-
-        if (num == (1 << 18) - 1) {
-            d.clear();
-            num = 256;
-        }
-    }
-
-    return decodeURIComponent(escape(o.join("")));
-}
-
-function createHash(obj) {
-    const jsonString = JSON.stringify(obj);
-    let hash = 0;
-
-    if (jsonString.length === 0) {
-        return hash.toString(16);
-    }
-
-    for (let i = 0; i < jsonString.length; i++) {
-        const char = jsonString.charCodeAt(i);
-        hash = ((hash << 5) - hash) + char;
-        hash = hash & hash; // Convert to 32bit integer
-    }
-
-    return hash.toString(16);
-}
-
 // The router code. Takes a URL, checks against the list of supported routes and then renders the corresponding content page.
 const router = async () => {
     count_router++;
@@ -130,8 +45,8 @@ const router = async () => {
     let sessContent = sessionStorage.getItem(hash);
 
     if (typeof (sessContent) == "string") {
-        content.innerHTML= lzw64_decode(sessContent);
-        //console.log('LZW64: ', content.innerHTML.length, sessContent.length);
+        content.innerHTML= lzw_decode(sessContent);
+        //console.log('HTML: ', content.innerHTML.length, 'LZW: ', sessContent.length);
         return;
     }
 
@@ -145,7 +60,7 @@ const router = async () => {
     content.innerHTML = await page.render();
     await page.after_render();
 
-    sessionStorage.setItem(hash, lzw64_encode(content.innerHTML.toString()));
+    sessionStorage.setItem(hash, lzw_encode(content.innerHTML.toString()));
 }
 
 //sessionStorage.clear();
