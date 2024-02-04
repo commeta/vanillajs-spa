@@ -14,7 +14,94 @@
 	<script type="text/javascript" src="https://cdn.datatables.net/v/ju/jq-3.6.0/jszip-2.5.0/dt-1.11.5/af-2.3.7/b-2.2.2/b-colvis-2.2.2/b-html5-2.2.2/b-print-2.2.2/cr-1.5.5/date-1.1.2/fc-4.0.2/fh-3.2.2/kt-2.6.4/r-2.2.9/rg-1.1.4/rr-1.2.8/sc-2.0.5/sb-1.3.2/sp-2.0.0/sl-1.3.4/sr-1.1.0/datatables.min.js"></script>
 	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>	
 	<script type="text/javascript" charset="utf8" src="https://cdnjs.cloudflare.com/ajax/libs/jquery-sparklines/2.1.2/jquery.sparkline.min.js"></script>	
+    <script>
+        function createHash(obj) {
+            const jsonString = JSON.stringify(obj);
+            let hash = 0;
 
+            if (jsonString.length === 0) {
+                return hash.toString(16);
+            }
+
+            for (let i = 0; i < jsonString.length; i++) {
+                const char = jsonString.charCodeAt(i);
+                hash = ((hash << 5) - hash) + char;
+                hash = hash & hash; // Convert to 32bit integer
+            }
+
+            return hash.toString(16);
+        }
+
+        function lzw_encode(s,base=64) {
+            if (!s) return s;
+            var sym="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_!#%()*+,./:;=?@[]^{|}~ $`";
+            sym +="\1\2\3\4\5\6\7\b\t\v\f\16\17\20\21\22\23\24\25\26\27\30\31\32\33\34\35\36\37\xf7&'>\0\n\r\"<\\";
+            var size=base*base*base;
+            var d=new Map();
+            var num=256;
+            var logb=Math.log2(base);
+            var s=unescape(encodeURIComponent(s)).split("");
+            var word=s[0];
+            var o=[];
+            function pack(word) {
+                var key=word.length>1 ? d.get(word) : word.charCodeAt(0);
+                for(var n=(Math.log2(num)/logb|0)+1; n; n--) {
+                    o.push(sym[key%base]);
+                    key=(key/base|0);
+                }
+            }
+            for (var i=1; i<s.length; i++) {
+                var c=s[i];
+                if (d.has(word+c)) {
+                    word+=c;
+                } else {
+                    d.set(word+c,num);
+                    pack(word);
+                    word=c;
+                    if(++num==size-1) {
+                        d.clear();
+                        num=256;
+                    }
+                }
+            }
+            pack(word);
+            return o.join("");
+        }
+
+        function lzw_decode(s,base=64) {
+            var sym="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_!#%()*+,./:;=?@[]^{|}~ $`";
+            sym +="\1\2\3\4\5\6\7\b\t\v\f\16\17\20\21\22\23\24\25\26\27\30\31\32\33\34\35\36\37\xf7&'>\0\n\r\"<\\";
+            var size=base*base*base;
+            var symd={};
+            for(var i=0; i<base; i++){
+                symd[sym.charAt(i)]=i;
+            }
+            var d=new Map();
+            var num=257;
+            var logb=Math.log2(base);
+            var logn=8/logb|0;
+            var i=0;
+            function unpack(pos=0) {
+                return symd[s[i++]]+(pos==logn ? 0 : base*unpack(pos+1));
+            }
+            var word=String.fromCharCode(unpack());
+            var prev=word;
+            var o=[word];
+            while(i<s.length) {
+                logn=Math.log2(num++)/logb|0;
+                var key=unpack();
+                word=key<256 ? String.fromCharCode(key) : d.has(key) ? d.get(key) : word+word.charAt(0);
+                o.push(word);
+                if(num==size-1) {
+                    d.clear();
+                    num=256;
+                }
+                d.set(num-2,prev+word.charAt(0));
+                prev=word;
+            }
+            return decodeURIComponent(escape(o.join("")));
+        }
+    </script>
     <script type="module" src="/app.js"></script>
 	<link href="data:image/x-icon;base64,AAABAAEAEBAAAAEAIABoBAAAFgAAACgAAAAQAAAAIAAAAAEAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACNl+BEZnTijGRt5bpYYuPIV2Lp1lJg6NZTYebMX2vlwGFu4pZ9huFe1NX8AgAAAAAAAAAAAAAAAAAAAACMlOpERVPp/1po6/+LlOz/oajv/6ux7v+rse7/oKjv/4yW7f9seOv/Q1Po/3mD5moAAAAAAAAAAAAAAAAAAAAAXmrnzIiQ7/98hub/srfv//r7/f/9/f3//v79//z9/f/u8Pr/jpXr/2d06f9UYefmx8j7CAAAAAAAAAAAkZbmPEdW6f/n6fj/7O35/1ll6f9zgOr/5Ob4//v7/P+4vvH/Ul7q/4mT7P/v8vv/Tlvr/32H41wAAAAAAAAAAGZy5qKCiu3//Pz9//79/f/Z3Pb/R1bs/0lX6/9td+v/PUzt/3R/7P/2+Pv//P38/5Sc7v9daui4AAAAANTU+wZTYOnuxMnz//3+/v///v7//fz8/8DF8/8+Tuz/Okvw/2Jv6//w8vv//v7+//7+/v/Y2/X/Tlvn+MXE9hKWnOlCR1bo//X2/P/+/v7//v79//39/P/6/fz/nqTx/1Be7P/l5/j//P39//7+/v/9/v7//Pv9/1Vi6v+GjelSa3fmemt27P/+/v7//f7+//v8/P/d4Pb/l57u/1Ff6v9ATuz/dX/s/8TG8v/39/z//v79//////+Biu//aHPmiFZj656Ole7/8/P8/7a88P9teOz/QU7r/zxL7v88TO7/PEzu/zxM7f89Tev/VmPq/6Cm7//k6Pn/oqnx/1lk665aZ+q8YnDp/4eQ5P+Wn+3/rrPv/77C8v/IzPD/0NTx/9XX8//U1/P/y9Dw/7e78P+XoO7/e4Xm/2Nv6P9XZe3Ke4foZkZT6v/AxvL//f39//7+/v/+/v7//v7+//7+/v/+/v7//v7+//7+/v/+/v7//f7+/8zR9P9KV+r/cX3nggAAAABzfud+SFbo/7a88v/8/f7//v7+//7+/v////////////7+/v/+/v7//f3+/7zB8/9KV+j/bnnlkNPX/gIAAAAAAAAAAH2H6XBJVub8j5jt//P2+//+/f3////////////9/v7/8/X8/4+Y7f9KV+f6doLmdgAAAAAAAAAAAAAAAAAAAAAAAAAAg4/rRE9f5eJcaer/w8rz//v7/f/5+/3/wMXz/1pn6f9XZObgjJjqRAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACxuvAUZ3PmnkdX5vxsdur/YW3p/0ta5vZreOOKvMPxDgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACXm+wqY3LjmGp35YSirO4cAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA8A8AAOAHAADAAwAAwAMAAIABAACAAQAAgAEAAIAAAAAAAAAAAAAAAIAAAADAAQAA4AcAAPAPAAD4HwAA/n8AAA==" rel="icon" type="image/x-icon" />
   </head>
