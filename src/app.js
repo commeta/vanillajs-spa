@@ -131,7 +131,7 @@ const router = async () => {
 
     if (typeof (sessContent) == "string") {
         content.innerHTML= lzw64_decode(sessContent);
-        console.log('LZW64: ', content.innerHTML.length, sessContent.length);
+        //console.log('LZW64: ', content.innerHTML.length, sessContent.length);
         return;
     }
 
@@ -148,7 +148,7 @@ const router = async () => {
     sessionStorage.setItem(hash, lzw64_encode(content.innerHTML.toString()));
 }
 
-sessionStorage.clear();
+//sessionStorage.clear();
 
 let count_router = 0;
 let hash = '';
